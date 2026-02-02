@@ -1,0 +1,47 @@
+
+<h3>Game Modes</h3>
+
+<div>
+    <a href="{% url 'home' %}">All</a>
+</div>
+
+{% for ID, name in game_modes %}
+    <div>
+        <a href="{% url 'home' %}?q={{ID}}">{{name}}</a>
+    </div>
+
+
+{% endfor %}
+
+<hr>
+
+<h3>Looking for Rank</h3>
+
+<div>
+    <a href="{% url 'home' %}">All</a>
+</div>
+
+{% for ID, rank in ranks %}
+    <div>
+        <a href="{% url 'home' %}?q={{ID}}">{{rank}}</a>
+    </div>
+
+
+{% endfor %}
+
+<hr>
+
+<h3> Looking for Role</h3>
+
+<div>
+    <a href="{% url 'home' %}">All</a>
+</div>
+
+{% for ID, role in roles %}
+    <div>
+        <a href="{% url 'home' %}?q={{ID}}">{{role}}</a>
+    </div>
+
+
+{% endfor %}
+<hr>

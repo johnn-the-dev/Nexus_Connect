@@ -1,0 +1,43 @@
+{% extends 'main.html' %}
+
+{% block content%}
+<style>
+    .post-container{
+        display: grid;
+        grid-template-columns: 1fr 3fr 1fr;
+    }
+</style>
+
+<div class="post-container">
+    <div>
+
+    </div>
+    
+    <div>
+        <h1> {{post.title}} </h1>
+        <h3>Created by: {{post.host}}</h3>
+        <div>
+            <p>Game Mode: {{post.get_game_mode_display}}</p>
+            <p>My Rank: {{post.get_host_rank_display}}</p>
+            <p>Minimal rank I'm looking for: {{post.get_min_rank_display}}</p>
+            <p>What role I'm looking for: {{post.get_looking_for_role_display}} </p>
+        </div>
+        <div>
+            <h3><u>Description</u></h3>
+            <p> {{post.description}} </p>
+        </div>
+        
+    </div>
+
+    <div>
+        
+
+
+    </div>
+
+</div>
+
+
+
+
+{% endblock %}
