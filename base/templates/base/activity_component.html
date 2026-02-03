@@ -1,0 +1,26 @@
+<div>
+    <h3>Your posts</h3>
+    <hr>
+
+    {% if request.user.is_authenticated %}
+        {% if request.user.lfgpost_set.all %}
+            <div>
+                {% for post in request.user.lfgpost_set.all %}
+                    <ul>
+                        <li><a href="{% url 'lfgpost' post.id %}">{{post.title}}</a></li>
+                    
+                    <p>{{ post.game_mode }}</p>
+                    </ul>
+                    <hr>
+                    
+                {% endfor %}
+
+
+            </div>
+        {% else %}
+            <p>You have not made any posts.</p>
+        {% endif %}
+    {% else %}
+        <p>Login to see your activity.</p>
+    {% endif %}
+</div>

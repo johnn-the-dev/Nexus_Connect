@@ -7,10 +7,12 @@
 
 {% for ID, name in game_modes %}
     <div>
-        <a href="{% url 'home' %}?q={{ID}}">{{name}}</a>
+        {% if request.resolver_match.url_name == 'profile' %}
+            <a href="{% url 'profile' user.id %}?mode={{ID}}">{{ name }}</a>
+        {% else %}
+            <a href="{% url 'home' %}?mode={{ID}}">{{ name }}</a>
+        {% endif %}
     </div>
-
-
 {% endfor %}
 
 <hr>
@@ -21,12 +23,14 @@
     <a href="{% url 'home' %}">All</a>
 </div>
 
-{% for ID, rank in ranks %}
+{% for ID, name in ranks %}
     <div>
-        <a href="{% url 'home' %}?q={{ID}}">{{rank}}</a>
+        {% if request.resolver_match.url_name == 'profile' %}
+            <a href="{% url 'profile' user.id %}?rank={{ID}}">{{ name }}</a>
+        {% else %}
+            <a href="{% url 'home' %}?rank={{ID}}">{{ name }}</a>
+        {% endif %}
     </div>
-
-
 {% endfor %}
 
 <hr>
@@ -37,11 +41,13 @@
     <a href="{% url 'home' %}">All</a>
 </div>
 
-{% for ID, role in roles %}
+{% for ID, name in roles %}
     <div>
-        <a href="{% url 'home' %}?q={{ID}}">{{role}}</a>
+        {% if request.resolver_match.url_name == 'profile' %}
+            <a href="{% url 'profile' user.id %}?role={{ID}}">{{ name }}</a>
+        {% else %}
+            <a href="{% url 'home' %}?role={{ID}}">{{ name }}</a>
+        {% endif %}
     </div>
-
-
 {% endfor %}
 <hr>

@@ -57,15 +57,26 @@ def registerPage(request):
 
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
-    posts = LFGPost.objects.filter(
-        Q(game_mode__icontains=q) |
-        Q(title__icontains=q) |
-        Q(description__icontains=q) |
-        Q(host_rank__icontains=q) |
-        Q(min_rank__icontains=q) |
-        Q(host_role__icontains=q) |
-        Q(looking_for_role__icontains=q)
-    )
+    posts = LFGPost.objects.all()
+    mode_filter = request.GET.get('mode')
+    rank_filter = request.GET.get('rank')
+    role_filter = request.GET.get('role')
+
+    if q:
+        posts = posts.filter(
+            Q(title__icontains=q)|
+            Q(description__icontains=q)
+        )
+
+    if mode_filter:
+        posts = posts.filter(game_mode=mode_filter)
+
+    if rank_filter:
+        posts = posts.filter(min_rank=rank_filter)
+    
+    if role_filter:
+        posts = posts.filter(looking_for_role=role_filter)
+
     post_count = posts.count()
 
     context = {
@@ -75,6 +86,7 @@ def home(request):
         'ranks': RANKS,
         'roles': ROLES,
     }
+
     return render(request, 'base/home.html', context)
 
 def lfgpost(request, pk):
@@ -131,3 +143,31 @@ def deletePost(request, pk):
         post.delete()
         return redirect('home')
     return render(request, 'base/delete.html', {'obj': post})
+
+def userProfile(request, pk):
+    user = User.objects.get(id=pk)
+    posts = user.lfgpost_set.all()
+    post_count = posts.count()
+
+    mode_filter = request.GET.get('mode')
+    rank_filter = request.GET.get('rank')
+    role_filter = request.GET.get('role')
+
+    if mode_filter:
+        posts = posts.filter(game_mode=mode_filter)
+    
+    if rank_filter:
+        posts = posts.filter(min_rank=rank_filter)
+    
+    if role_filter:
+        posts = posts.filter(looking_for_role=role_filter)
+
+    context = {'user': user,
+               'posts': posts,
+               'post_count': post_count,
+               'game_modes': GAME_MODES,
+               'ranks': RANKS,
+               'roles': ROLES,
+            }
+    
+    return render(request, 'base/profile.html', context)

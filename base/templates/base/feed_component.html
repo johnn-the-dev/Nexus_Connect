@@ -8,7 +8,7 @@
         {% endif %}
 
         <h3><a href="{% url 'lfgpost' post.id %}">{{ post.title }}</a></h3>
-        <p>Posted by: {{post.host}}</p>
+        <p>Posted by: <a href="{% url 'profile' post.host.id %}">@{{post.host}}</a></p>
         <p>Game Mode: {{ post.get_game_mode_display }}</p>
         <p>Host's rank: {{post.get_host_rank_display}}</p>
         <p>Looking for min. rank: {{post.get_min_rank_display}}</p>

@@ -1,35 +1,28 @@
 {% extends 'main.html' %}
 
-
-
 {% block content %}
-
 <style>
-    .home-container{
+    .profile-container{
         display: grid;
         grid-template-columns: 1fr 3fr 1fr;
     }
 </style>
-
-<div class="home-container">
+<h1>{{user.username}}</h1>
+<div class="profile-container">
     <div>
         <h2>Filters</h2>
         <hr>
         
         {% include 'base/category_component.html' %}
     </div>
-    
+
     <div>
-        <h2>Posts</h2>
-        <a href="{% url 'create-post' %}">Create Post</a>
+        <h3>Posts</h3>
         <hr>
         {% include 'base/feed_component.html' %}
     </div>
 
     <div>
-        {% include 'base/activity_component.html' %}
     </div>
 </div>
-
-
 {% endblock content %}
