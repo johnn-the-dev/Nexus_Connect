@@ -22,8 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*wjn4e9vhf0k41w8!y0^*36z4atv1zw-21t#pg&8c%*@vm$$9p'
-#load_dotenv()
+load_dotenv()
+SECRET_KEY = os.getenv('SECRET_KEY')
+
 #RIOT_API_KEY = os.getenv("RIOT_API_KEY")
 
 
