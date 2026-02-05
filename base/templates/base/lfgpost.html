@@ -10,16 +10,33 @@
 
 <div class="post-container">
     <div>
-
+        
     </div>
-    
     <div>
         <h1> {{post.title}} </h1>
+
+        {% if request.user == post.host %}
+            <a href="{% url 'delete-post' post.id %}" class="btn btn-delete">Delete Lobby</a>
+
+        {% elif request.user in post.participants.all %}
+            <a href="{% url 'leave-room' post.id %}" class="btn btn-leave">Leave Lobby</a>
+
+        {% else %}
+            <a href="{% url 'join-room' post.id %}" class="btn btn-join">Join Lobby</a>
+        {% endif %}
+
         <h3>Created by: {{post.host}}</h3>
         <div>
+            {% if request.user == post.host %}
+            <a href="{% url 'update-post' post.id %}">Edit</a>
+            <a href="{% url 'delete-post' post.id %}">Delete</a>
+            {% endif %}
+        </div>
+        <div>
+            <p>Region: {{post.get_region_display}}</p>
             <p>Game Mode: {{post.get_game_mode_display}}</p>
-            <p>My Rank: {{post.get_host_rank_display}}</p>
-            <p>Minimal rank I'm looking for: {{post.get_min_rank_display}}</p>
+            <p>My tier: {{post.get_host_tier_display}}</p>
+            <p>Minimal tier I'm looking for: {{post.get_min_tier_display}}</p>
             <p>What role I'm looking for: {{post.get_looking_for_role_display}} </p>
         </div>
         <div>
@@ -27,17 +44,55 @@
             <p> {{post.description}} </p>
         </div>
         
+        <div>
+           {% if request.user in post.participants.all %}
+                <div>
+                    <div>
+                        <h3>Lobby Chat 💬</h3>
+                    </div>
+
+                    <div>
+                        {% for message in messages %}
+                            
+                                
+                            <div style="padding: 5px">
+                                <small>@{{ message.user.username }} {{ message.created|timesince }} ago</small>
+                            </div>
+
+                            <div>
+                                {{ message.body }}
+                                
+                            </div>
+                            <hr>
+                        {% empty %}
+                            <p>No messages yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <input type="text" name="body" placeholder="Type a message..." required autocomplete="off">
+                        <button type="submit">Send ➤</button>
+                    </form>
+                </div>
+            {% else %}
+            {% endif %}
+        </div>
+
     </div>
-
     <div>
-        
-
-
+        <h1>Post members</h1>
+        <ul>
+            {% for user in post.participants.all %}
+                <li>
+                    {{ user.username }}
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 
 </div>
-
-
 
 
 {% endblock %}

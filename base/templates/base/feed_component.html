@@ -9,9 +9,10 @@
 
         <h3><a href="{% url 'lfgpost' post.id %}">{{ post.title }}</a></h3>
         <p>Posted by: <a href="{% url 'profile' post.host.id %}">@{{post.host}}</a></p>
+        <p>Region: {{post.get_region_display}}</p>
         <p>Game Mode: {{ post.get_game_mode_display }}</p>
-        <p>Host's rank: {{post.get_host_rank_display}}</p>
-        <p>Looking for min. rank: {{post.get_min_rank_display}}</p>
+        <p>Host's tier: {{post.get_host_tier_display}}</p>
+        <p>Looking for min. tier: {{post.get_min_tier_display}}</p>
         <p>Host's role: {{post.get_host_role_display}}</p>
         <p>Looking for role: {{ post.get_looking_for_role_display }}</p>
         <hr>

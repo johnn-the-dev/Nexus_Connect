@@ -12,8 +12,8 @@ GAME_MODES = (
     ('CLASH', 'Clash'),
 )
 
-
-RANKS = (
+TIERS = (
+    ('UNRANKED', 'Unranked'),
     ('IRON', 'Iron'),
     ('BRONZE', 'Bronze'),
     ('SILVER', 'Silver'),
@@ -21,10 +21,10 @@ RANKS = (
     ('PLATINUM', 'Platinum'),
     ('EMERALD', 'Emerald'),
     ('DIAMOND', 'Diamond'),
-    ('MASTER', 'Master+'),
-    ('UNRANKED', 'Unranked'),
+    ('MASTER', 'Master'),
+    ('GRANDMASTER', 'Grandmaster'),
+    ('CHALLENGER', 'Challenger'),
 )
-
 
 ROLES = (
     ('TOP', 'Top'),
@@ -35,18 +35,37 @@ ROLES = (
     ('FILL', 'Fill')
 )
 
+REGIONS = (
+    ('BR', 'Brazil'),
+    ('EUNE', 'Europe Nordic & East'),
+    ('EUW', 'Europe West'),
+    ('LAN', 'Latin America North'),
+    ('LAS', 'Latin America South'),
+    ('NA', 'North America'),
+    ('OCE', "Oceania"),
+    ("RU", 'Russia'),
+    ('TR', 'Turkey'),
+    ('ME', 'Middle East'),
+    ('JP', 'Japan'),
+    ('KR', 'Republic of Korea'),
+    ('SEA', 'Southeast Asia'),
+    ('TW', 'Taiwan, Hong Kong, Macao'),
+    ('VN', 'Vietnam'),
+    ('PBE', 'Public Beta Environment')
+)
 
 class LFGPost(models.Model):
     host = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     game_mode = models.CharField(max_length=20, choices=GAME_MODES, default='RANKED_SOLO')
-
-    host_rank = models.CharField(max_length=20, choices=RANKS, default='UNRANKED')
-    min_rank = models.CharField(max_length=20, choices=RANKS, default='UNRANKED')
-
+    region = models.CharField(max_length=30, choices=REGIONS, default='EUW')
+    host_tier = models.CharField(max_length=20, choices=TIERS, default='UNRANKED')
+    min_tier = models.CharField(max_length=20, choices=TIERS, default='UNRANKED')
+    participants = models.ManyToManyField(User, related_name="participants", blank=True)
     host_role = models.CharField(max_length=20, choices=ROLES, default="FILL")
     looking_for_role = models.CharField(max_length=20, choices=ROLES, default="FILL")
+    
 
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -63,12 +82,22 @@ class Profile(models.Model):
     riot_id = models.CharField(max_length=100, blank=True, null=True)
     discord_handle = models.CharField(max_length=100, blank=True, null=True)
 
+    #puuid = models.CharField(max_length=200, blank=True, null=True)
+    summoner_id = models.CharField(max_length=50, blank=True, null=True)
+    summonel_lvl = models.IntegerField(default=0)
+    #profile_icon_id = models.IntegerField(default=)
+    rank_tier = models.CharField(max_length=20, blank=True, null=True)
+    rank_division = models.CharField(max_length=10, blank=True, null=True)
+    league_points = models.IntegerField(default=0)
+    wins = models.IntegerField(default=0)
+    losses = models.IntegerField(default=0)
+
     def __str__(self):
         return str(self.user)
 
 class Message(models.Model):
-    name = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(LFGPost, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    chat_room = models.ForeignKey(LFGPost, on_delete=models.CASCADE, related_name='messages', null=True, blank=True)
     body = models.TextField()
 
     updated = models.DateTimeField(auto_now=True)

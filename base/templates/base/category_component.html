@@ -1,3 +1,20 @@
+<h3>Regions</h3>
+
+<div>
+    <a href="{% url 'home' %}">All</a>
+</div>
+
+{% for ID, name in regions %}
+    <div>
+        {% if request.resolver_match.url_name == 'profile' %}
+            <a href="{% url 'profile' user.id %}?region={{ID}}">{{ name }}</a>
+        {% else %}
+            <a href="{% url 'home' %}?region={{ID}}"> {{ name }} </a>
+        {% endif %}
+    </div>
+{% endfor %}
+
+<hr>
 
 <h3>Game Modes</h3>
 
@@ -23,12 +40,12 @@
     <a href="{% url 'home' %}">All</a>
 </div>
 
-{% for ID, name in ranks %}
+{% for ID, name in tiers %}
     <div>
         {% if request.resolver_match.url_name == 'profile' %}
-            <a href="{% url 'profile' user.id %}?rank={{ID}}">{{ name }}</a>
+            <a href="{% url 'profile' user.id %}?tier={{ID}}">{{ name }}</a>
         {% else %}
-            <a href="{% url 'home' %}?rank={{ID}}">{{ name }}</a>
+            <a href="{% url 'home' %}?tier={{ID}}">{{ name }}</a>
         {% endif %}
     </div>
 {% endfor %}

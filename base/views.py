@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import LFGPost, Message, GAME_MODES, RANKS, ROLES
+from .models import LFGPost, Message, GAME_MODES, TIERS, ROLES, REGIONS
 from .forms import LFGPostForm
 
 # Create your views here.
@@ -59,8 +59,9 @@ def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     posts = LFGPost.objects.all()
     mode_filter = request.GET.get('mode')
-    rank_filter = request.GET.get('rank')
+    tier_filter = request.GET.get('tier')
     role_filter = request.GET.get('role')
+    region_filter = request.GET.get('region')
 
     if q:
         posts = posts.filter(
@@ -71,20 +72,24 @@ def home(request):
     if mode_filter:
         posts = posts.filter(game_mode=mode_filter)
 
-    if rank_filter:
-        posts = posts.filter(min_rank=rank_filter)
+    if tier_filter:
+        posts = posts.filter(min_tier=tier_filter)
     
     if role_filter:
         posts = posts.filter(looking_for_role=role_filter)
 
+    if region_filter:
+        posts = posts.filter(region=region_filter)
+    
     post_count = posts.count()
 
     context = {
         'posts': posts,
         'post_count': post_count,
         'game_modes': GAME_MODES,
-        'ranks': RANKS,
+        'tiers': TIERS,
         'roles': ROLES,
+        'regions': REGIONS,
     }
 
     return render(request, 'base/home.html', context)
@@ -93,14 +98,57 @@ def lfgpost(request, pk):
     post = LFGPost.objects.get(id=pk)
     title = post.title
     game_mode = post.game_mode
+    region = post.region
     host_role = post.host_role
     looking_for_role = post.looking_for_role
-    host_rank = post.host_rank
-    min_rank = post.min_rank
+    host_tier = post.host_tier
+    min_tier = post.min_tier
     description = post.description
+    participants = post.participants
+    particiapnts_count = participants.count()
     
-    context = {'post': post, 'title': title, 'game_mode': game_mode, 'host_role': host_role , 'looking_for_role': looking_for_role, 'host_rank': host_rank, 'min_rank': min_rank , 'description': description,}
+    if request.method == 'POST':
+        message_body = request.POST.get('body')
+        
+        Message.objects.create(
+            user=request.user,
+            chat_room=post,
+            body=message_body
+        )
+
+        return redirect('lfgpost', pk=pk) 
+
+    post_messages = post.messages.all()
+
+    context = {'post': post, 'title': title, 'game_mode': game_mode, 'region': region , 'host_role': host_role , 'looking_for_role': looking_for_role, 'host_tier': host_tier,
+               'min_tier': min_tier , 'description': description, 'participants': participants, 'participants_count': particiapnts_count, 'messages': post_messages}
     return render(request, "base/lfgpost.html", context)
+
+@login_required(login_url='login')
+def joinPost(request, pk):
+    post = LFGPost.objects.get(id=pk)
+
+    if request.user != post.host:
+        post.participants.add(request.user)
+
+    return redirect('lfgpost', pk=pk)
+
+@login_required(login_url='login')
+def leavePost(request, pk):
+    post = LFGPost.objects.get(id=pk)
+
+    if request.user in post.participants.all():
+        post.participants.remove(request.user)
+    
+    if request.user == post.host:
+        post.delete()
+        return redirect('home')
+
+    if post.participants.count() == 0:
+        post.delete()
+        return redirect('home')
+
+    return redirect('home')
 
 @login_required(login_url='login')
 def create_lfgpost(request):
@@ -109,7 +157,11 @@ def create_lfgpost(request):
     if request.method == 'POST':
         form = LFGPostForm(request.POST)
         if form.is_valid():
-            form.save()
+            post = form.save(commit=False)
+            post.host = request.user
+            post.save()
+            post.participants.add(request.user)
+
             return redirect('home')
 
     context = {'form': form}
@@ -150,14 +202,14 @@ def userProfile(request, pk):
     post_count = posts.count()
 
     mode_filter = request.GET.get('mode')
-    rank_filter = request.GET.get('rank')
+    tier_filter = request.GET.get('tier')
     role_filter = request.GET.get('role')
 
     if mode_filter:
         posts = posts.filter(game_mode=mode_filter)
     
-    if rank_filter:
-        posts = posts.filter(min_rank=rank_filter)
+    if tier_filter:
+        posts = posts.filter(min_tier=tier_filter)
     
     if role_filter:
         posts = posts.filter(looking_for_role=role_filter)
@@ -166,7 +218,7 @@ def userProfile(request, pk):
                'posts': posts,
                'post_count': post_count,
                'game_modes': GAME_MODES,
-               'ranks': RANKS,
+               'tier': TIERS,
                'roles': ROLES,
             }
     
