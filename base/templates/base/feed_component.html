@@ -1,22 +1,83 @@
 <div>
-    
     {% for post in posts %}
-    <div>
-        {% if request.user == post.host %}
-        <a href="{% url 'update-post' post.id %}">Edit</a>
-        <a href="{% url 'delete-post' post.id %}">Delete</a>
-        {% endif %}
-
-        <h3><a href="{% url 'lfgpost' post.id %}">{{ post.title }}</a></h3>
-        <p>Posted by: <a href="{% url 'profile' post.host.id %}">@{{post.host}}</a></p>
-        <p>Region: {{post.get_region_display}}</p>
-        <p>Game Mode: {{ post.get_game_mode_display }}</p>
-        <p>Host's tier: {{post.get_host_tier_display}}</p>
-        <p>Looking for min. tier: {{post.get_min_tier_display}}</p>
-        <p>Host's role: {{post.get_host_role_display}}</p>
-        <p>Looking for role: {{ post.get_looking_for_role_display }}</p>
-        <hr>
-    </div>
+    
+    <div class="card mb-3 shadow-sm border-secondary">
+        
+        <div class="card-header d-flex justify-content-between align-items-center bg-body-tertiary">
             
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-secondary d-flex justify-content-center align-items-center me-2" style="width: 32px; height: 32px; color: white; font-weight: bold;">
+                    {{ post.host.username|slice:":1"|upper }}
+                </div>
+                
+                <div>
+                    <a href="{% url 'user-profile' post.host.id %}" class="fw-bold text-decoration-none text-light">
+                        @{{post.host.username}}
+                    </a>
+                    <span class="text-muted mx-1">•</span>
+                    <small class="text-muted">{{ post.created|timesince }} ago</small>
+                </div>
+            </div>
+
+            {% if request.user == post.host %}
+            <div class="btn-group">
+                <a href="{% url 'update-post' post.id %}" class="btn btn-sm btn-outline-secondary">
+                    Edit
+                </a>
+                <a href="{% url 'delete-post' post.id %}" class="btn btn-sm btn-outline-danger px-3 fs-5" style="line-height: 1; padding-top: 0; padding-bottom: 4px;">
+                    &times;
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="card-body">
+            
+            <h5 class="card-title mb-3">
+                <a href="{% url 'lfgpost' post.id %}" class="text-decoration-none text-reset fw-bold">
+                    {{ post.title }}
+                </a>
+            </h5>
+
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                
+                <span class="badge bg-primary">
+                    Region: {{post.get_region_display}}
+                </span>
+                <span class="badge bg-success">
+                    Mode: {{ post.get_game_mode_display }}
+                </span>
+
+                <div class="vr mx-1"></div>
+
+                <span class="badge border border-warning text-warning bg-dark">
+                    Host: {{post.get_host_tier_display}}
+                </span>
+                <span class="badge border border-secondary text-light bg-dark">
+                    Min: {{post.get_min_tier_display}}
+                </span>
+
+                <div class="vr mx-1"></div>
+
+                <span class="badge bg-secondary">
+                    Host: {{post.get_host_role_display}}
+                </span>
+                <span class="badge bg-info text-dark">
+                    Looking for: {{ post.get_looking_for_role_display }}
+                </span>
+            </div>
+
+            <div class="d-grid">
+                <a href="{% url 'lfgpost' post.id %}" class="btn btn-outline-light btn-sm">
+                    View Lobby & Chat ({{ post.participants.count }}/5)
+                </a>
+            </div>
+
+        </div>
+    </div>
+    {% empty %}
+        <div class="alert alert-dark text-center" role="alert">
+            No active lobbies found. Why not <a href="{% url 'create-post' %}" class="alert-link">create one?</a>
+        </div>
     {% endfor %}
 </div>

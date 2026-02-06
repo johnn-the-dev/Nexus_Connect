@@ -1,26 +1,42 @@
 <div>
-    <h3>Your posts</h3>
-    <hr>
-
     {% if request.user.is_authenticated %}
+        
         {% if request.user.lfgpost_set.all %}
-            <div>
+            <div class="list-group list-group-flush">
+                
                 {% for post in request.user.lfgpost_set.all %}
-                    <ul>
-                        <li><a href="{% url 'lfgpost' post.id %}">{{post.title}}</a></li>
-                    
-                    <p>{{ post.game_mode }}</p>
-                    </ul>
-                    <hr>
-                    
-                {% endfor %}
+                    <div class="list-group-item bg-transparent border-bottom border-secondary px-0 py-2">
+                        
+                        <div class="mb-1">
+                            <a href="{% url 'lfgpost' post.id %}" class="fw-bold text-decoration-none text-info-emphasis">
+                                {{ post.title|truncatechars:30 }}
+                            </a>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge border border-secondary text-light fw-normal" style="font-size: 0.7rem;">
+                                {{ post.get_game_mode_display }}
+                            </span>
+                            
+                            <small class="text-muted" style="font-size: 0.7rem;">
+                                {{ post.created|timesince }} ago
+                            </small>
+                        </div>
 
+                    </div>
+                {% endfor %}
 
             </div>
         {% else %}
-            <p>You have not made any posts.</p>
+            <p class="text-muted small text-center mt-3">
+                You have not created any lobbies yet.
+            </p>
         {% endif %}
+
     {% else %}
-        <p>Login to see your activity.</p>
+        <div class="alert alert-dark text-center mt-2 p-3" role="alert">
+            <small class="d-block mb-2">Login to see your activity.</small>
+            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm w-100">Login</a>
+        </div>
     {% endif %}
 </div>

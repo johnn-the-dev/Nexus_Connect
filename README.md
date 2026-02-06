@@ -1,11 +1,11 @@
 # Nexus Connect 
 
-A "Looking For Group" (LFG) website for League of Legends players. It helps you find teammates based on Rank, Role, and Game Mode. For now it 
+A "Looking For Group" (LFG) website for League of Legends players. It helps you find teammates based on Rank, Role, and Game Mode.
 
-**Status:** Project currently in MVP phase.
+**Status:** Project currently in MVP phase. Currently working on implementing RIOT API to connect LoL accounts and get user's LoL account statistcs.
 
 ## Purpose
-I built this project to learn backend development with Python and Django.
+I built this project to learn backend development with Python and Django. CSS, Bootstrap, JavaScript is written by AI, since this project was created for me to learn about backend in Django.
 
 ## Features
 * **Filter System:** Find teammates by Rank, Role, or Mode.
@@ -15,6 +15,10 @@ I built this project to learn backend development with Python and Django.
 
 ## How to Run
 1. Clone the repository.
-2. Install Django: `pip install django`
-3. Set up the database: `python manage.py migrate`
-4. Run the server: `python manage.py runserver`
+2. Install Dependencies: `pip install -r requirements.txt`
+3. Set up `.env` file in the root directory with:
+   * `SECRET_KEY`
+   * `RIOT_API_KEY`
+   * `DEBUG=True`
+4. Set up the database: `python manage.py migrate`
+5. Run the server: `python manage.py runserver`

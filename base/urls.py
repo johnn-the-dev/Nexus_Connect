@@ -12,5 +12,6 @@ urlpatterns = [
     path('create-post/', views.create_lfgpost, name="create-post"),
     path('update-post/<str:pk>', views.updatePost, name="update-post"),
     path('delete-post/<str:pk>', views.deletePost, name='delete-post'),
-    path('profile/<str:pk>', views.userProfile, name="profile"),
+    path('profile/<str:pk>', views.userProfile, name="user-profile"),
+    
 ]

@@ -204,6 +204,7 @@ def userProfile(request, pk):
     mode_filter = request.GET.get('mode')
     tier_filter = request.GET.get('tier')
     role_filter = request.GET.get('role')
+    region_filter = request.GET.get('region')
 
     if mode_filter:
         posts = posts.filter(game_mode=mode_filter)
@@ -214,12 +215,17 @@ def userProfile(request, pk):
     if role_filter:
         posts = posts.filter(looking_for_role=role_filter)
 
+    if region_filter:
+        posts = posts.filter(region=region_filter)
+
     context = {'user': user,
                'posts': posts,
                'post_count': post_count,
                'game_modes': GAME_MODES,
-               'tier': TIERS,
+               'tiers': TIERS,
                'roles': ROLES,
+               'regions': REGIONS
             }
     
     return render(request, 'base/profile.html', context)
+

@@ -1,35 +1,43 @@
 {% extends 'main.html' %}
 
-
-
 {% block content %}
 
-<style>
-    .home-container{
-        display: grid;
-        grid-template-columns: 1fr 3fr 1fr;
-    }
-</style>
+<div class="row">
 
-<div class="home-container">
-    <div>
-        <h2>Filters</h2>
-        <hr>
-        
-        {% include 'base/category_component.html' %}
+    <div class="col-md-3">
+        <div class="card mb-3 border-0 bg-transparent"> 
+            <div class="card-header bg-transparent border-0 ps-0">
+                <h5 class="mb-0 text-uppercase text-muted fw-bold">Browse Topics</h5>
+            </div>
+            {% include 'base/category_component.html' %}
+        </div>
     </div>
     
-    <div>
-        <h2>Posts</h2>
-        <a href="{% url 'create-post' %}">Create Post</a>
-        <hr>
+    <div class="col-md-6">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="mb-0">Lobby Feed</h3>
+                <small class="text-muted">{{ post_count }} Active rooms found</small>
+            </div>
+            
+            <a href="{% url 'create-post' %}" class="btn btn-primary">
+                + Create Lobby
+            </a>
+        </div>
+
         {% include 'base/feed_component.html' %}
     </div>
 
-    <div>
-        {% include 'base/activity_component.html' %}
+    <div class="col-md-3">
+        <div class="card mb-3 border-0 bg-transparent">
+            <div class="card-header bg-transparent border-0 ps-0">
+                 <h5 class="mb-0 text-uppercase text-muted fw-bold">Recent Activity</h5>
+            </div>
+            {% include 'base/activity_component.html' %}
+        </div>
     </div>
-</div>
 
+</div>
 
 {% endblock content %}

@@ -1,28 +1,57 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<style>
-    .profile-container{
-        display: grid;
-        grid-template-columns: 1fr 3fr 1fr;
-    }
-</style>
-<h1>{{user.username}}</h1>
-<div class="profile-container">
-    <div>
-        <h2>Filters</h2>
-        <hr>
+
+<div class="card mb-4 border-0 bg-body-tertiary shadow-sm">
+    <div class="card-body text-center py-4">
         
-        {% include 'base/category_component.html' %}
+        <div class="rounded-circle bg-secondary d-flex justify-content-center align-items-center mx-auto mb-3" 
+             style="width: 80px; height: 80px; font-size: 2.5rem; color: white; font-weight: bold;">
+            {{ user.username|slice:":1"|upper }}
+        </div>
+
+        <h1 class="fw-bold">{{ user.username }}</h1>
+        
+        <p class="text-muted mb-0">
+            Member since: {{ user.date_joined|date:"F Y" }}
+        </p>
+
+        </div>
+</div>
+
+<div class="row">
+    
+    <div class="col-md-3">
+        <div class="card mb-3 border-0 bg-transparent">
+            <div class="card-header bg-transparent border-0 ps-0">
+                <h5 class="mb-0 text-muted fw-bold">Filters</h5>
+            </div>
+            {% include 'base/category_component.html' %}
+        </div>
     </div>
 
-    <div>
-        <h3>Posts</h3>
-        <hr>
+    <div class="col-md-6">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="mb-0">User's Lobbies</h3>
+            <span class="badge bg-secondary">{{ post_count }} Posts</span>
+        </div>
+        
         {% include 'base/feed_component.html' %}
     </div>
 
-    <div>
+    <div class="col-md-3">
+        <div class="card border-secondary mb-3">
+            <div class="card-header">User Stats</div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><strong>Rank:</strong> <span class="text-muted">N/A</span></li>
+                    <li class="mb-2"><strong>Role:</strong> <span class="text-muted">N/A</span></li>
+                    <li><strong>Server:</strong> <span class="text-muted">N/A</span></li>
+                </ul>
+            </div>
+        </div>
     </div>
+
 </div>
+
 {% endblock content %}

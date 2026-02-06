@@ -1,70 +1,83 @@
-<h3>Regions</h3>
+<div class="d-grid gap-3">
 
-<div>
-    <a href="{% url 'home' %}">All</a>
-</div>
+    <div class="card border-0 bg-transparent">
+        <h5 class="fw-bold text-muted mb-2">Regions</h5>
+        <div class="list-group list-group-flush shadow-sm rounded">
+            
+            {% if request.resolver_match.url_name == 'user-profile' %}
+                <a href="{% url 'user-profile' user.id %}" class="list-group-item list-group-item-action fw-bold text-primary">All Regions</a>
+            {% else %}
+                <a href="{% url 'home' %}" class="list-group-item list-group-item-action fw-bold text-primary">All Regions</a>
+            {% endif %}
 
-{% for ID, name in regions %}
-    <div>
-        {% if request.resolver_match.url_name == 'profile' %}
-            <a href="{% url 'profile' user.id %}?region={{ID}}">{{ name }}</a>
-        {% else %}
-            <a href="{% url 'home' %}?region={{ID}}"> {{ name }} </a>
-        {% endif %}
+            {% for ID, name in regions %}
+                {% if request.resolver_match.url_name == 'user-profile' %}
+                    <a href="{% url 'user-profile' user.id %}?region={{ID}}" class="list-group-item list-group-item-action">{{ name }}</a>
+                {% else %}
+                    <a href="{% url 'home' %}?region={{ID}}" class="list-group-item list-group-item-action">{{ ID }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
-{% endfor %}
 
-<hr>
+    <div class="card border-0 bg-transparent">
+        <h5 class="fw-bold text-muted mb-2">Game Modes</h5>
+        <div class="list-group list-group-flush shadow-sm rounded">
+            
+            {% if request.resolver_match.url_name == 'user-profile' %}
+                <a href="{% url 'user-profile' user.id %}" class="list-group-item list-group-item-action fw-bold text-primary">All Modes</a>
+            {% else %}
+                <a href="{% url 'home' %}" class="list-group-item list-group-item-action fw-bold text-primary">All Modes</a>
+            {% endif %}
 
-<h3>Game Modes</h3>
-
-<div>
-    <a href="{% url 'home' %}">All</a>
-</div>
-
-{% for ID, name in game_modes %}
-    <div>
-        {% if request.resolver_match.url_name == 'profile' %}
-            <a href="{% url 'profile' user.id %}?mode={{ID}}">{{ name }}</a>
-        {% else %}
-            <a href="{% url 'home' %}?mode={{ID}}">{{ name }}</a>
-        {% endif %}
+            {% for ID, name in game_modes %}
+                {% if request.resolver_match.url_name == 'user-profile' %}
+                    <a href="{% url 'user-profile' user.id %}?mode={{ID}}" class="list-group-item list-group-item-action">{{ name }}</a>
+                {% else %}
+                    <a href="{% url 'home' %}?mode={{ID}}" class="list-group-item list-group-item-action">{{ name }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
-{% endfor %}
 
-<hr>
+    <div class="card border-0 bg-transparent">
+        <h5 class="fw-bold text-muted mb-2">Rank</h5>
+        <div class="list-group list-group-flush shadow-sm rounded">
+            
+            {% if request.resolver_match.url_name == 'user-profile' %}
+                <a href="{% url 'user-profile' user.id %}" class="list-group-item list-group-item-action fw-bold text-primary">Any Rank</a>
+            {% else %}
+                <a href="{% url 'home' %}" class="list-group-item list-group-item-action fw-bold text-primary">Any Rank</a>
+            {% endif %}
 
-<h3>Looking for Rank</h3>
-
-<div>
-    <a href="{% url 'home' %}">All</a>
-</div>
-
-{% for ID, name in tiers %}
-    <div>
-        {% if request.resolver_match.url_name == 'profile' %}
-            <a href="{% url 'profile' user.id %}?tier={{ID}}">{{ name }}</a>
-        {% else %}
-            <a href="{% url 'home' %}?tier={{ID}}">{{ name }}</a>
-        {% endif %}
+            {% for ID, name in tiers %}
+                {% if request.resolver_match.url_name == 'user-profile' %}
+                    <a href="{% url 'user-profile' user.id %}?tier={{ID}}" class="list-group-item list-group-item-action">{{ name }}</a>
+                {% else %}
+                    <a href="{% url 'home' %}?tier={{ID}}" class="list-group-item list-group-item-action">{{ name }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
-{% endfor %}
 
-<hr>
+    <div class="card border-0 bg-transparent">
+        <h5 class="fw-bold text-muted mb-2">Role</h5>
+        <div class="list-group list-group-flush shadow-sm rounded">
+            
+            {% if request.resolver_match.url_name == 'user-profile' %}
+                <a href="{% url 'user-profile' user.id %}" class="list-group-item list-group-item-action fw-bold text-primary">Any Role</a>
+            {% else %}
+                <a href="{% url 'home' %}" class="list-group-item list-group-item-action fw-bold text-primary">Any Role</a>
+            {% endif %}
 
-<h3> Looking for Role</h3>
-
-<div>
-    <a href="{% url 'home' %}">All</a>
-</div>
-
-{% for ID, name in roles %}
-    <div>
-        {% if request.resolver_match.url_name == 'profile' %}
-            <a href="{% url 'profile' user.id %}?role={{ID}}">{{ name }}</a>
-        {% else %}
-            <a href="{% url 'home' %}?role={{ID}}">{{ name }}</a>
-        {% endif %}
+            {% for ID, name in roles %}
+                {% if request.resolver_match.url_name == 'user-profile' %}
+                    <a href="{% url 'user-profile' user.id %}?role={{ID}}" class="list-group-item list-group-item-action">{{ name }}</a>
+                {% else %}
+                    <a href="{% url 'home' %}?role={{ID}}" class="list-group-item list-group-item-action">{{ name }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
-{% endfor %}
-<hr>
+
+</div>
