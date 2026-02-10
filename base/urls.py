@@ -13,5 +13,6 @@ urlpatterns = [
     path('update-post/<str:pk>', views.updatePost, name="update-post"),
     path('delete-post/<str:pk>', views.deletePost, name='delete-post'),
     path('profile/<str:pk>', views.userProfile, name="user-profile"),
-    
+    path("link-riot/", views.link_riot_account, name="link-riot"),
+    path("unlink-riot/", views.unlink_riot_account, name="unlink-riot"),
 ]

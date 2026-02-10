@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import LFGPost, Message, GAME_MODES, TIERS, ROLES, REGIONS
 from .forms import LFGPostForm
+from .riot_services import get_summoner_data, get_profile_stats, update_profile
 
 # Create your views here.
 def loginPage(request):
@@ -105,7 +106,7 @@ def lfgpost(request, pk):
     min_tier = post.min_tier
     description = post.description
     participants = post.participants
-    particiapnts_count = participants.count()
+    participants_count = participants.count()
     
     if request.method == 'POST':
         message_body = request.POST.get('body')
@@ -121,7 +122,8 @@ def lfgpost(request, pk):
     post_messages = post.messages.all()
 
     context = {'post': post, 'title': title, 'game_mode': game_mode, 'region': region , 'host_role': host_role , 'looking_for_role': looking_for_role, 'host_tier': host_tier,
-               'min_tier': min_tier , 'description': description, 'participants': participants, 'participants_count': particiapnts_count, 'messages': post_messages}
+               'min_tier': min_tier , 'description': description, 'participants': participants, 'participants_count': participants_count, 'messages': post_messages}
+
     return render(request, "base/lfgpost.html", context)
 
 @login_required(login_url='login')
@@ -194,12 +196,13 @@ def deletePost(request, pk):
     if request.method == 'POST':
         post.delete()
         return redirect('home')
+
     return render(request, 'base/delete.html', {'obj': post})
 
 def userProfile(request, pk):
     user = User.objects.get(id=pk)
     posts = user.lfgpost_set.all()
-    post_count = posts.count()
+    
 
     mode_filter = request.GET.get('mode')
     tier_filter = request.GET.get('tier')
@@ -218,9 +221,28 @@ def userProfile(request, pk):
     if region_filter:
         posts = posts.filter(region=region_filter)
 
+    post_count = posts.count()
+    riot_stats = None
+
+    if hasattr(user, "profile"):
+        profile = user.profile
+        
+
+        if profile.puuid:
+            try:
+                update_profile(profile)
+            except Exception as e:
+                print(f"Error when checking username: {e}")
+            
+            try:
+                riot_stats = get_profile_stats(profile.puuid, profile.platform)
+            except Exception as e:
+                print(f"Error when downloading data: {e}")
+
     context = {'user': user,
                'posts': posts,
                'post_count': post_count,
+               "riot_stats": riot_stats,
                'game_modes': GAME_MODES,
                'tiers': TIERS,
                'roles': ROLES,
@@ -229,3 +251,54 @@ def userProfile(request, pk):
     
     return render(request, 'base/profile.html', context)
 
+def riot_information(request):
+    context = {}
+
+    if request.method == "POST":
+        game_name = request.POST.get("game_name")
+        tag_line = request.POST.get("tag_line")
+        platform = request.POST.get("platform")
+
+        data = get_summoner_data(game_name, tag_line, platform)
+        context["player_data"] = data
+
+    return render(request, "lol_stats.html", context)
+
+@login_required(login_url='login')
+def link_riot_account(request):
+    if request.method == "POST":
+        game_name = request.POST.get("game_name")
+        tag_line = request.POST.get("tag_line")
+        platform = request.POST.get("platform")
+
+        data = get_summoner_data(game_name, tag_line, platform)
+
+        if data and "puuid" in data:
+            profile = request.user.profile
+            profile.riot_game_name = data["game_name"]
+            profile.riot_tag_line = data["tag_line"]
+            profile.platform = platform
+            profile.puuid = data["puuid"]
+            profile.icon_id = data.get("icon_id")
+            
+            profile.save()
+            messages.success(request, f"Account {game_name}#{tag_line} was successfully connected.")
+        else:
+            messages.error(request, "Account wasn't found.")
+    
+    return redirect('user-profile', pk=request.user.id)
+
+@login_required(login_url="login")
+def unlink_riot_account(request):
+    if request.method == "POST":
+        profile = request.user.profile
+        profile.riot_game_name = None
+        profile.riot_tag_line = None
+        profile.platform = None
+        profile.puuid = None
+        profile.icon_id = 29
+        
+        profile.save()
+        messages.info(request, "Riot účet byl odpojen.")
+
+    return redirect("user-profile", pk=request.user.id)

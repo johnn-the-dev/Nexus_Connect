@@ -79,18 +79,13 @@ class LFGPost(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True, null=True)
-    riot_id = models.CharField(max_length=100, blank=True, null=True)
     discord_handle = models.CharField(max_length=100, blank=True, null=True)
 
-    #puuid = models.CharField(max_length=200, blank=True, null=True)
-    summoner_id = models.CharField(max_length=50, blank=True, null=True)
-    summonel_lvl = models.IntegerField(default=0)
-    #profile_icon_id = models.IntegerField(default=)
-    rank_tier = models.CharField(max_length=20, blank=True, null=True)
-    rank_division = models.CharField(max_length=10, blank=True, null=True)
-    league_points = models.IntegerField(default=0)
-    wins = models.IntegerField(default=0)
-    losses = models.IntegerField(default=0)
+    game_name = models.CharField(max_length=30, blank=True, null=True)
+    tag_line = models.CharField(max_length=10, blank=True, null=True)
+    platform = models.CharField(max_length=30, blank=True, null=True)
+    puuid = models.CharField(max_length=100, blank=True, null=True, unique=True)
+    icon_id = models.IntegerField( default=29, blank=True, null=True)
 
     def __str__(self):
         return str(self.user)

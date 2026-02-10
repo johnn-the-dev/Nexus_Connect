@@ -40,14 +40,138 @@
     </div>
 
     <div class="col-md-3">
-        <div class="card border-secondary mb-3">
-            <div class="card-header">User Stats</div>
-            <div class="card-body">
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-2"><strong>Rank:</strong> <span class="text-muted">N/A</span></li>
-                    <li class="mb-2"><strong>Role:</strong> <span class="text-muted">N/A</span></li>
-                    <li><strong>Server:</strong> <span class="text-muted">N/A</span></li>
-                </ul>
+        
+        <style>
+            .match-history-scroll {
+                max-height: 400px;
+                overflow-y: auto;
+                padding-right: 5px;
+            }
+
+            .match-history-scroll::-webkit-scrollbar {
+                width: 8px;
+            }
+            .match-history-scroll::-webkit-scrollbar-track {
+                background: #2d2d39;
+                border-radius: 4px;
+            }
+            .match-history-scroll::-webkit-scrollbar-thumb {
+                background-color: #c8aa6e;
+                border-radius: 4px;
+                border: 2px solid #2d2d39;
+            }
+        </style>
+
+        <div class="card border-secondary mb-3 shadow-sm" style="background-color: #2b2d42; color: white;">
+            <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #1e1e24; border-bottom: 1px solid #444;">
+                <span class="fw-bold">🎮 Riot Stats</span>
+                {% if user.profile.puuid and user.profile.platform %}
+                    <span class="badge bg-warning text-dark">{{ user.profile.platform|upper }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="card-body text-center p-3">
+                
+                {% if user.profile.puuid %}
+                    <div class="mb-3">
+                        <img src="https://ddragon.leagueoflegends.com/cdn/14.3.1/img/profileicon/{{ user.profile.icon_id|default:'29' }}.png" 
+                             class="rounded-circle mb-2 border border-3 border-warning"
+                             style="width: 70px; height: 70px;" 
+                             alt="Summoner Icon">
+                        
+                        <h5 class="fw-bold mb-0" style="color: #f1f1f1;">{{ user.profile.game_name }}</h5>
+                        <p class="text-muted small mb-0">#{{ user.profile.tag_line }}</p>
+                    </div>
+
+                    {% if riot_stats %}
+                        <div class="mb-3 p-2 rounded" style="background-color: rgba(0,0,0,0.2); border: 1px solid #444;">
+                            {% if riot_stats.RANKED_SOLO_5x5 %}
+                                <h4 class="fw-bold mb-0" style="color: #c8aa6e; text-transform: uppercase;">
+                                    {{ riot_stats.RANKED_SOLO_5x5.tier }} {{ riot_stats.RANKED_SOLO_5x5.rank }}
+                                </h4>
+                                <div class="d-flex justify-content-center gap-3 small mt-1">
+                                    <span class="text-light">{{ riot_stats.RANKED_SOLO_5x5.leaguePoints }} LP</span>
+                                    <span class="text-muted">|</span>
+                                    <span class="text-success">{{ riot_stats.RANKED_SOLO_5x5.wins }}W</span>
+                                    <span class="text-danger">{{ riot_stats.RANKED_SOLO_5x5.losses }}L</span>
+                                </div>
+                            {% else %}
+                                <p class="text-muted mb-0">Unranked in Solo/Duo</p>
+                            {% endif %}
+                        </div>
+
+                        <hr style="border-color: #555;">
+
+                        <div class="text-start">
+                            <h6 class="text-muted small text-uppercase fw-bold mb-2">Match History</h6>
+                            
+                            <div class="match-history-scroll">
+                                <ul class="list-unstyled mb-0">
+                                    {% for game in riot_stats.last_games %}
+                                        <li class="d-flex justify-content-between align-items-center mb-2 p-2 rounded" 
+                                            style="background-color: {% if game.win %}rgba(40, 167, 69, 0.15){% else %}rgba(220, 53, 69, 0.15){% endif %}; border-left: 4px solid {% if game.win %}#28a745{% else %}#dc3545{% endif %};">
+                                            
+                                            <div>
+                                                <span class="fw-bold d-block" style="font-size: 0.9rem;">{{ game.champion }}</span>
+                                                <span style="font-size: 0.75rem; color: #aaa;">
+                                                    {{ game.kda_formatted }} KDA
+                                                </span>
+                                            </div>
+                                            
+                                            <div class="text-end">
+                                                <div style="font-size: 0.7rem; font-weight: bold; color: #c8aa6e; text-transform: uppercase; margin-bottom: 2px;">
+                                                    {{ game.game_mode }}
+                                                </div>
+                                                <span class="badge {% if game.win %}bg-success{% else %}bg-danger{% endif %} mb-1" style="font-size: 0.7rem;">
+                                                    {% if game.win %}WIN{% else %}LOSS{% endif %}
+                                                </span>
+                                                <br>
+                                                <span style="font-size: 0.7rem; color: #888;">{{ game.cs }} CS</span>
+                                            </div>
+                                        </li>
+                                    {% empty %}
+                                        <li class="text-muted small text-center py-3">No recent games found.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            </div>
+
+                    {% else %}
+                        <div class="alert alert-dark py-2 small">
+                            <div class="spinner-border spinner-border-sm text-warning" role="status"></div>
+                            Loading stats...
+                        </div>
+                    {% endif %}
+
+                    {% if request.user == user %}
+                        <form action="{% url 'unlink-riot' %}" method="POST" class="mt-3 border-top border-secondary pt-2">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger btn-sm w-100" style="font-size: 0.8rem;">Unlink Account</button>
+                        </form>
+                    {% endif %}
+
+                {% else %}
+                    {% if request.user == user %}
+                        <p class="card-text small text-muted">Connect your Riot account to show your rank and stats.</p>
+                        
+                        <form action="{% url 'link-riot' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="text" name="game_name" class="form-control form-control-sm mb-2" placeholder="Name (e.g. Faker)" style="background: #1e1e24; border: 1px solid #444; color: white;" required>
+                            <input type="text" name="tag_line" class="form-control form-control-sm mb-2" placeholder="Tag (e.g. T1)" style="background: #1e1e24; border: 1px solid #444; color: white;" required>
+                            <select name="platform" class="form-select form-select-sm mb-2" style="background: #1e1e24; border: 1px solid #444; color: white;">
+                                <option value="euw1">EU West</option>
+                                <option value="eun1">EUNE</option>
+                                <option value="na1">North America</option>
+                                <option value="kr">Korea</option>
+
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm w-100">Connect Account</button>
+                        </form>
+                    {% else %}
+                        <p class="text-muted fst-italic small">This user hasn't linked a Riot account yet.</p>
+                    {% endif %}
+
+                {% endif %}
             </div>
         </div>
     </div>

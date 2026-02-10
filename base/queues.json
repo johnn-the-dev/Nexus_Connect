@@ -1,0 +1,16 @@
+{
+    "400": "Normal Draft",
+    "420": "Ranked Solo",
+    "430": "Blind Pick",
+    "440": "Ranked Flex",
+    "450": "ARAM",
+    "490": "Quickplay",
+    "700": "Clash",
+    "720": "ARAM Clash",
+    "830": "Co-op vs AI (Intro)",
+    "840": "Co-op vs AI (Beginner)",
+    "850": "Co-op vs AI (Int)",
+    "900": "ARURF",
+    "1700": "Arena",
+    "1900": "URF"
+}
