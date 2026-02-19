@@ -90,7 +90,7 @@ def get_tier(puuid , platform, account_info):
         account_info[queue["queueType"]] = queue
     
 
-def get_matchids(puuid, region, account_info, count=10):
+def get_matchids(puuid, region, account_info, count=5):
     url = f"https://{region}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count={count}"
     response = requests.get(url, headers=headers)
 

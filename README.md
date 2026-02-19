@@ -26,6 +26,9 @@ I built this project to master backend development with **Python** and **Django*
     * **KDA Calculator:** dynamic coloring based on performance.
     * **CS/min:** Calculates farming efficiency based on game duration.
     * **Game Mode Detection:** Uses a local JSON mapping (`queues.json`) to translate Riot's Queue IDs (e.g., `420`) into standard names like **"Ranked Solo"** or **"ARAM"**.
+* **AI Chat Assistant:** Integrated an AI agent using LangGraph and the Groq API.
+* **Tool Calling:** The agent autonomously decides when to trigger the Riot API to answer user queries in real-time.
+* **Session Memory:** Implemented thread-specific memory so the AI remembers context for each logged-in user.
 
 ### LFG System
 * **Dynamic Filtering:** Filter lobbies by Rank, Role, Region, or Game Mode.
@@ -47,5 +50,6 @@ I built this project to master backend development with **Python** and **Django*
    * `SECRET_KEY`
    * `RIOT_API_KEY`
    * `DEBUG=True`
+   * `GROQ_API_KEY`
 4. Set up the database: `python manage.py migrate`
 5. Run the server: `python manage.py runserver`
